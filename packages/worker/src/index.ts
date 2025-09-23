@@ -11,6 +11,6 @@ function makeWorker(name: string) {
   }, connection);
 }
 
-['quotes', 'contest:open', 'contest:tick', 'contest:settle'].forEach(makeWorker);
+['schedule:prelock', 'contest:lock', 'contest:settle', 'snap:leaderboard'].forEach(makeWorker);
 
 console.log('Worker started');

@@ -31,8 +31,22 @@ pnpm dev:web
 ## Scripts
 See root package.json for dev scripts.
 
-## Next Steps
-- Flesh out endpoints & validation
-- Implement market data adapter
-- Implement realtime contest rooms
-- Add UI pages & components
+## Milestones
+
+### Milestone 1 — Data & Schema
+- Prisma models (User, Contest, ContestEntry, EntryPick, Leaderboard, PriceBar optional)
+- MarketDataAdapter (Finnhub placeholder)
+- Endpoints: /api/market/snapshot, /api/market/ohlc
+
+### Milestone 2 — Contest Core
+- POST /api/contests, publish, join, picks
+- Worker jobs: schedule:prelock, contest:lock, contest:settle
+
+### Milestone 3 — Realtime + UI
+- Socket.IO leaderboard:update
+- Draft & Contest rooms in web app
+
+### Milestone 4 — Hardening
+- Rate limiting, Redis caching, ticker universe filtering, basic auth
+
+See spec in issues for extended roadmap.

@@ -1,7 +1,6 @@
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
-import { leaguesRouter } from './routes/leagues';
 import { contestsRouter } from './routes/contests';
 import { marketRouter } from './routes/market';
 import { setupRealtime } from './realtime/socket';
@@ -12,9 +11,8 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
-app.use('/api/leagues', leaguesRouter);
 app.use('/api/contests', contestsRouter);
-app.use('/api', marketRouter);
+app.use('/api/market', marketRouter);
 
 const server = http.createServer(app);
 setupRealtime(server);

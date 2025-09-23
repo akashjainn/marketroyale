@@ -1,5 +1,7 @@
-export interface User { id: string; email: string; displayName?: string | null; }
-export interface League { id: string; name: string; ownerId: string; }
-export interface Contest { id: string; leagueId: string; startsAt: string; endsAt: string; status: string; }
-export interface Entry { id: string; userId: string; contestId: string; picks: string[]; score: number; }
+export interface User { id: string; handle: string; email: string; createdAt: string; }
+export type ContestStatus = 'DRAFT' | 'OPEN' | 'LOCKED' | 'SETTLED';
+export interface Contest { id: string; name: string; status: ContestStatus; startAt: string; endAt: string; scoringRule: string; createdById: string; }
+export interface ContestEntry { id: string; contestId: string; userId: string; createdAt: string; finalScore?: number | null; }
+export interface EntryPick { id: string; entryId: string; ticker: string; weight: number; lockPrice?: number | null; closePrice?: number | null; }
+export interface LeaderboardSnapshot { id: string; contestId: string; snapshotAt: string; ranks: Array<{ entryId: string; score: number; rank: number }>; }
 export interface ScoreUpdate { entryId: string; score: number; rank: number; }

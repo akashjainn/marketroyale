@@ -10,76 +10,76 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
-  displayName  String?
-  leagues      LeagueMember[]
-  entries      Entry[]
-  createdAt    DateTime      @default(now())
-  ownedLeagues League[]      @relation("UserOwnedLeagues")
-}
-
-model League {
-  id           String        @id @default(cuid())
-  name         String
-  ownerId      String
-  owner        User          @relation("UserOwnedLeagues", fields: [ownerId], references: [id])
-  members      LeagueMember[]
-  contests     Contest[]
-  createdAt    DateTime      @default(now())
-}
-
-model LeagueMember {
-  id        String @id @default(cuid())
-  userId    String
-  leagueId  String
-  role      String
-  user      User   @relation(fields: [userId], references: [id])
-  league    League @relation(fields: [leagueId], references: [id])
-
-  @@unique([userId, leagueId])
+  id         String         @id @default(cuid())
+  handle     String         @unique
+  email      String         @unique
+  createdAt  DateTime       @default(now())
+  entries    ContestEntry[]
+  contests   Contest[]      @relation("CreatedContests")
 }
 
 model Contest {
-  id         String   @id @default(cuid())
-  leagueId   String
-  startsAt   DateTime
-  endsAt     DateTime
-  status     String   @default("upcoming")
-  entries    Entry[]
-  league     League   @relation(fields: [leagueId], references: [id])
-  details    Json?
+  id           String          @id @default(cuid())
+  name         String
+  status       ContestStatus   @default(DRAFT)
+  startAt      DateTime
+  endAt        DateTime
+  scoringRule  String          @default("PCT_RETURN")
+  createdById  String
+  createdBy    User            @relation("CreatedContests", fields: [createdById], references: [id])
+  entries      ContestEntry[]
+  leaderboard  Leaderboard[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
 }
 
-model Entry {
-  id         String   @id @default(cuid())
-  userId     String
+model ContestEntry {
+  id         String      @id @default(cuid())
   contestId  String
-  picks      Json
-  score      Float    @default(0)
-  details    Json?
-  user       User     @relation(fields: [userId], references: [id])
-  contest    Contest  @relation(fields: [contestId], references: [id])
-
-  @@unique([userId, contestId])
+  userId     String
+  createdAt  DateTime    @default(now())
+  finalScore Float?      @default(0)
+  picks      EntryPick[]
+  contest    Contest     @relation(fields: [contestId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
+  @@unique([contestId, userId])
 }
 
-model QuoteCache {
-  symbol     String   @id
-  price      Float
-  changePct  Float    @default(0)
-  ts         DateTime @updatedAt
+model EntryPick {
+  id         String   @id @default(cuid())
+  entryId    String
+  ticker     String
+  weight     Float
+  lockPrice  Float?
+  closePrice Float?
+  entry      ContestEntry @relation(fields: [entryId], references: [id])
+  @@index([ticker])
 }
 
-model Candle {
+model PriceBar {
   id     String   @id @default(cuid())
-  symbol String
+  ticker String
   t      DateTime
   o      Float
   h      Float
   l      Float
   c      Float
   v      Float
+  @@index([ticker, t])
+}
 
-  @@index([symbol, t])
+model Leaderboard {
+  id         String   @id @default(cuid())
+  contestId  String
+  snapshotAt DateTime @default(now())
+  ranks      Json
+  contest    Contest  @relation(fields: [contestId], references: [id])
+  @@index([contestId, snapshotAt])
+}
+
+enum ContestStatus {
+  DRAFT
+  OPEN
+  LOCKED
+  SETTLED
 }
