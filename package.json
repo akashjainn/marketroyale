@@ -7,7 +7,7 @@
     "build": "tsc -b tsconfig.build.json",
     "build:web": "pnpm --filter web build",
     "build:api": "pnpm --filter api build",
-    "build:all": "pnpm build && pnpm build:api && pnpm build:web",
+  "build:all": "pnpm build && pnpm build:web",
     "dev:api": "pnpm --filter api dev",
     "dev:web": "pnpm --filter web dev",
     "dev:worker": "pnpm --filter worker dev",
@@ -25,6 +25,8 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.0",
-    "@vercel/node": "^3.0.27"
+    "@vercel/node": "^3.0.27",
+    "@types/react": "^18.2.69",
+    "@types/react-dom": "^18.2.22"
   }
 }

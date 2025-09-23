@@ -4,6 +4,9 @@
     { "path": "packages/shared" },
     { "path": "packages/api" },
     { "path": "packages/worker" },
-    { "path": "packages/web" }
+    // The web (React) app is built separately with its own build script (vite + tsc).
+    // Excluding it here avoids running the composite TypeScript builder over the frontend
+    // in the Vercel environment, which was failing due to missing React type declarations.
+    // { "path": "packages/web" }
   ]
 }
