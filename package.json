@@ -9,8 +9,9 @@
     "build": "tsc -b tsconfig.build.json",
     "ensure:web": "pnpm --filter web install --frozen-lockfile || pnpm --filter web install",
     "build:web": "pnpm --filter web build",
+    "collect:static": "shx rm -rf dist && shx mkdir -p dist && shx cp -r packages/web/dist/* dist",
     "build:api": "pnpm --filter api build",
-    "build:all": "pnpm build && pnpm ensure:web && pnpm build:web",
+    "build:all": "pnpm build && pnpm ensure:web && pnpm build:web && pnpm collect:static",
     "postinstall": "pnpm --filter api prisma generate",
     "dev:api": "pnpm --filter api dev",
     "dev:web": "pnpm --filter web dev",
@@ -31,6 +32,7 @@
     "typescript": "^5.4.0",
     "@vercel/node": "^3.0.27",
     "@types/react": "^18.2.69",
-    "@types/react-dom": "^18.2.22"
+    "@types/react-dom": "^18.2.22",
+    "shx": "^0.3.4"
   }
 }
