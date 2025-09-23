@@ -4,12 +4,17 @@
   "version": "0.1.0",
   "workspaces": ["packages/*"],
   "scripts": {
-  "build": "tsc -b tsconfig.build.json",
+    "build": "tsc -b tsconfig.build.json",
+    "build:web": "pnpm --filter web build",
     "dev:api": "pnpm --filter api dev",
     "dev:web": "pnpm --filter web dev",
     "dev:worker": "pnpm --filter worker dev",
+    "dev": "concurrently \"pnpm dev:api\" \"pnpm dev:web\"",
     "lint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write ."
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
   },
   "devDependencies": {
     "@types/node": "^20.11.30",
@@ -17,6 +22,7 @@
     "@typescript-eslint/parser": "^7.0.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "@vercel/node": "^3.0.27"
   }
 }

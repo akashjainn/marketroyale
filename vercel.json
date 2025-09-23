@@ -1,0 +1,16 @@
+{
+  "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter web build",
+  "outputDirectory": "packages/web/dist",
+  "framework": null,
+  "functions": {
+    "api/[...all].ts": {
+      "memory": 512,
+      "maxDuration": 10
+    }
+  },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/[...all].ts" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}

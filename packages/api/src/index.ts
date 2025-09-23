@@ -1,23 +1,12 @@
-import express from 'express';
 import http from 'http';
-import cors from 'cors';
-import { contestsRouter } from './routes/contests';
-import { marketRouter } from './routes/market';
 import { setupRealtime } from './realtime/socket';
+import { createApp } from './app';
 import { env } from './env';
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-app.get('/api/health', (_req, res) => res.json({ ok: true }));
-app.use('/api/contests', contestsRouter);
-app.use('/api/market', marketRouter);
-
+// Local development entrypoint with websockets. In Vercel serverless we use app.ts via api/[...all].ts.
+const app = createApp();
 const server = http.createServer(app);
 setupRealtime(server);
 
-const port = 4000;
-server.listen(port, () => {
-  console.log(`API listening on :${port} env=${env.NODE_ENV}`);
-});
+const port = process.env.PORT || 4000;
+server.listen(port, () => console.log(`API (realtime enabled) listening on :${port} env=${env.NODE_ENV}`));
