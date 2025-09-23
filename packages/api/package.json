@@ -5,7 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc -p tsconfig.json",
+    "prebuild": "tsc -b ../shared/tsconfig.json",
+    "build": "tsc -b tsconfig.json",
     "start": "node dist/index.js",
     "prisma": "prisma",
     "prisma:migrate": "prisma migrate dev",
