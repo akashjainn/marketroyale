@@ -7,7 +7,5 @@
     "module": "ES2022"
   },
   "include": ["src"],
-  "references": [
-    { "path": "../shared" }
-  ]
+  // Removed project reference to shared to avoid requiring composite build artifacts during isolated web build on Vercel.
 }
