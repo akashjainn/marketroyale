@@ -1,0 +1,84 @@
+// Prisma schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  displayName  String?
+  leagues      LeagueMember[]
+  entries      Entry[]
+  createdAt    DateTime      @default(now())
+}
+
+model League {
+  id           String        @id @default(cuid())
+  name         String
+  ownerId      String
+  owner        User          @relation(fields: [ownerId], references: [id])
+  members      LeagueMember[]
+  contests     Contest[]
+  createdAt    DateTime      @default(now())
+}
+
+model LeagueMember {
+  id        String @id @default(cuid())
+  userId    String
+  leagueId  String
+  role      String
+  user      User   @relation(fields: [userId], references: [id])
+  league    League @relation(fields: [leagueId], references: [id])
+
+  @@unique([userId, leagueId])
+}
+
+model Contest {
+  id         String   @id @default(cuid())
+  leagueId   String
+  startsAt   DateTime
+  endsAt     DateTime
+  status     String   @default("upcoming")
+  entries    Entry[]
+  league     League   @relation(fields: [leagueId], references: [id])
+  details    Json?
+}
+
+model Entry {
+  id         String   @id @default(cuid())
+  userId     String
+  contestId  String
+  picks      Json
+  score      Float    @default(0)
+  details    Json?
+  user       User     @relation(fields: [userId], references: [id])
+  contest    Contest  @relation(fields: [contestId], references: [id])
+
+  @@unique([userId, contestId])
+}
+
+model QuoteCache {
+  symbol     String   @id
+  price      Float
+  changePct  Float    @default(0)
+  ts         DateTime @updatedAt
+}
+
+model Candle {
+  id     String   @id @default(cuid())
+  symbol String
+  t      DateTime
+  o      Float
+  h      Float
+  l      Float
+  c      Float
+  v      Float
+
+  @@index([symbol, t])
+}

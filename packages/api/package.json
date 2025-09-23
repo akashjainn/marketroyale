@@ -1,0 +1,31 @@
+{
+  "name": "api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "prisma": "prisma",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:generate": "prisma generate",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "zod": "^3.22.4",
+    "dotenv": "^16.4.5",
+    "@prisma/client": "^5.15.0",
+    "socket.io": "^4.7.5",
+    "bullmq": "^5.5.4"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0",
+    "prisma": "^5.15.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.30"
+  }
+}
