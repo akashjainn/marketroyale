@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm install --frozen-lockfile && pnpm --filter web build",
+  "buildCommand": "pnpm build:web && pnpm --filter api prisma generate",
   "outputDirectory": "packages/web/dist",
   "framework": null,
   "functions": {
