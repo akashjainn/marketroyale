@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm build:web && pnpm --filter api prisma generate",
+  "buildCommand": "pnpm --filter api prisma generate && pnpm -w run build:all",
   "outputDirectory": "packages/web/dist",
   "framework": null,
   "functions": {

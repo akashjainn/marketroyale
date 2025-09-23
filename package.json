@@ -3,10 +3,11 @@
   "private": true,
   "version": "0.1.0",
   "workspaces": ["packages/*"],
-  "packageManager": "pnpm@9.0.0",
   "scripts": {
     "build": "tsc -b tsconfig.build.json",
     "build:web": "pnpm --filter web build",
+    "build:api": "pnpm --filter api build",
+    "build:all": "pnpm build && pnpm build:api && pnpm build:web",
     "dev:api": "pnpm --filter api dev",
     "dev:web": "pnpm --filter web dev",
     "dev:worker": "pnpm --filter worker dev",
