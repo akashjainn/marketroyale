@@ -4,7 +4,9 @@
     "jsx": "react-jsx",
     "outDir": "dist",
     "rootDir": "src",
-    "module": "ES2022"
+    "module": "ES2022",
+    "types": ["react", "react-dom", "react-router-dom"],
+    "noEmit": true
   },
   "include": ["src"],
   // Removed project reference to shared to avoid requiring composite build artifacts during isolated web build on Vercel.
