@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "workspaces": ["packages/*"],
   "scripts": {
+    "prebuild": "pnpm --filter shared build",
     "build": "tsc -b tsconfig.build.json",
     "build:web": "pnpm --filter web build",
     "build:api": "pnpm --filter api build",
