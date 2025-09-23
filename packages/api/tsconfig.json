@@ -6,7 +6,7 @@
     "baseUrl": ".",
     "composite": true,
     "paths": {
-      "shared": ["../shared/src"],
+      "shared": ["../shared/dist"],
       "@shared/*": ["../shared/src/*"]
     }
   },
