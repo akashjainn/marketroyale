@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "workspaces": ["packages/*"],
   "scripts": {
-    "build": "tsc -b packages/*",
+  "build": "tsc -b tsconfig.build.json",
     "dev:api": "pnpm --filter api dev",
     "dev:web": "pnpm --filter web dev",
     "dev:worker": "pnpm --filter worker dev",

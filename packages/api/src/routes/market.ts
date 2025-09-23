@@ -1,6 +1,6 @@
-import { Router } from 'express';
+import { Router, Router as ExpressRouter } from 'express';
 
-export const marketRouter = Router();
+export const marketRouter: ExpressRouter = Router();
 
 marketRouter.get('/quote', async (req, res) => {
   const symbol = req.query.symbol as string;

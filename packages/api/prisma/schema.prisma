@@ -16,13 +16,14 @@ model User {
   leagues      LeagueMember[]
   entries      Entry[]
   createdAt    DateTime      @default(now())
+  ownedLeagues League[]      @relation("UserOwnedLeagues")
 }
 
 model League {
   id           String        @id @default(cuid())
   name         String
   ownerId      String
-  owner        User          @relation(fields: [ownerId], references: [id])
+  owner        User          @relation("UserOwnedLeagues", fields: [ownerId], references: [id])
   members      LeagueMember[]
   contests     Contest[]
   createdAt    DateTime      @default(now())

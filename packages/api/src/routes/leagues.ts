@@ -1,6 +1,6 @@
-import { Router } from 'express';
+import { Router, Router as ExpressRouter } from 'express';
 
-export const leaguesRouter = Router();
+export const leaguesRouter: ExpressRouter = Router();
 
 leaguesRouter.get('/', async (_req, res) => {
   res.json({ leagues: [] });

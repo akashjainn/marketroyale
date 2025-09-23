@@ -1,6 +1,6 @@
-import { Router } from 'express';
+import { Router, Router as ExpressRouter } from 'express';
 
-export const contestsRouter = Router();
+export const contestsRouter: ExpressRouter = Router();
 
 contestsRouter.get('/:id', async (req, res) => {
   res.json({ contest: { id: req.params.id, status: 'upcoming' } });
