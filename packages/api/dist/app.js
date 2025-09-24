@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createApp = createApp;
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const contests_1 = require("./routes/contests");
 const market_1 = require("./routes/market");
 const env_1 = require("./env");
@@ -28,6 +30,20 @@ function createApp() {
     });
     app.use('/api/contests', contests_1.contestsRouter);
     app.use('/api/market', market_1.marketRouter);
+    const staticDir = path_1.default.resolve(process.cwd(), 'dist');
+    const indexFile = path_1.default.join(staticDir, 'index.html');
+    if (fs_1.default.existsSync(staticDir) && fs_1.default.existsSync(indexFile)) {
+        app.use(express_1.default.static(staticDir));
+        app.get('*', (req, res, next) => {
+            if (req.path?.startsWith('/api')) {
+                return next();
+            }
+            res.sendFile(indexFile);
+        });
+    }
+    else {
+        console.warn('Static frontend assets not found at', staticDir);
+    }
     // Global error handler
     app.use((err, _req, res, _next) => {
         console.error('API Error:', err);

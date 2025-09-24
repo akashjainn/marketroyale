@@ -1,9 +1,24 @@
 import { Queue } from 'bullmq';
 import { env } from '../env';
 
-const connection = { connection: { url: env.REDIS_URL || 'redis://localhost:6379' } };
+const connection = env.REDIS_URL
+  ? { connection: { url: env.REDIS_URL } }
+  : null;
 
-export const prelockQueue = new Queue('schedule:prelock', connection);
-export const lockQueue = new Queue('contest:lock', connection);
-export const settleQueue = new Queue('contest:settle', connection);
-export const leaderboardSnapQueue = new Queue('snap:leaderboard', connection);
+function createQueue(name: string): Queue | null {
+  if (!connection) {
+    if (process.env.NODE_ENV !== 'test') {
+      console.warn(
+        `[queues] Queue "${name}" disabled – no REDIS_URL configured. Jobs will be ignored.`
+      );
+    }
+    return null;
+  }
+
+  return new Queue(name, connection);
+}
+
+export const prelockQueue = createQueue('schedule:prelock');
+export const lockQueue = createQueue('contest:lock');
+export const settleQueue = createQueue('contest:settle');
+export const leaderboardSnapQueue = createQueue('snap:leaderboard');
