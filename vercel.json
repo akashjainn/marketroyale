@@ -1,16 +1,18 @@
 {
   "buildCommand": "pnpm -w run build:all",
+  "outputDirectory": "dist",
   "functions": {
-    "api/**": {
-      "runtime": "nodejs18.x",
-      "memory": 512,
-      "maxDuration": 10
+    "api/minimal.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/debug.ts": {
+      "runtime": "nodejs18.x"
+    },
+    "api/[...all].ts": {
+      "runtime": "nodejs18.x"
     }
   },
   "routes": [
-    { "src": "/api/minimal", "dest": "/api/minimal.js" },
-    { "src": "/api/debug", "dest": "/api/debug.ts" },
-    { "src": "/api/(.*)", "dest": "/api/[...all].ts" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]

@@ -8,8 +8,4 @@ coverage
 .next
 
 # Generated static files from web build
-index.html
-*.svg
-index-*.css
-index-*.js
-assets/
+dist/
