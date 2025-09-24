@@ -1,5 +1,7 @@
 import express, { Express } from 'express';
 import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
 import { contestsRouter } from './routes/contests';
 import { marketRouter } from './routes/market';
 import { env } from './env';
@@ -25,6 +27,20 @@ export function createApp(): Express {
   
   app.use('/api/contests', contestsRouter);
   app.use('/api/market', marketRouter);
+
+  const staticDir = path.resolve(process.cwd(), 'dist');
+  const indexFile = path.join(staticDir, 'index.html');
+  if (fs.existsSync(staticDir) && fs.existsSync(indexFile)) {
+    app.use(express.static(staticDir));
+    app.get('*', (req, res, next) => {
+      if (req.path?.startsWith('/api')) {
+        return next();
+      }
+      res.sendFile(indexFile);
+    });
+  } else {
+    console.warn('Static frontend assets not found at', staticDir);
+  }
 
   // Global error handler
   app.use((err: any, _req: any, res: any, _next: any) => {

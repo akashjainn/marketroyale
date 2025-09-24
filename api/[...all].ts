@@ -51,15 +51,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
   }
-  
-  // For now, just return a simple message instead of loading the full app
-  return res.json({
-    message: 'API endpoint temporarily disabled for debugging',
-    url: req.url,
-    method: req.method
-  });
-
-  /* Commented out for debugging
   try {
     const appInstance = await getApp();
     // Express app handles the request
@@ -72,5 +63,4 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       stack: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.stack : undefined) : undefined
     });
   }
-  */
 }
