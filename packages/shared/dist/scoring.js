@@ -1,4 +1,7 @@
-export function computeScore(picks, openMap, lastMap) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.computeScore = computeScore;
+function computeScore(picks, openMap, lastMap) {
     let totalPct = 0;
     for (const s of picks) {
         const open = openMap[s];

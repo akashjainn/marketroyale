@@ -1,6 +1,9 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createFinnhubAdapter = createFinnhubAdapter;
 // Finnhub REST adapter implementation
 // Docs: https://finnhub.io/docs/api
-export function createFinnhubAdapter(apiKey) {
+function createFinnhubAdapter(apiKey) {
     const base = 'https://finnhub.io/api/v1';
     const tokenParam = apiKey ? `token=${apiKey}` : '';
     const snapshotTTL = 5000; // 5s cache window to avoid rate limits

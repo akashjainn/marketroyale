@@ -3,13 +3,34 @@
 // because standard serverless functions are stateless; for realtime you may deploy a separate long-lived server
 // (e.g., using a separate Vercel Edge/Websocket-compatible deployment or another host like Fly.io/Render).
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createApp } from '../packages/api/src/app';
 
-// Reuse a single app instance across invocations (cold start optimization).
-const app = createApp();
+// Initialize app with error handling
+let app: any = null;
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  // Strip the leading "/api" segment because Vercel invokes this function for any /api/* route.
-  // However, Express route definitions already include /api prefixes, so we leave the path intact.
-  (app as any)(req, res);
+async function getApp() {
+  if (!app) {
+    try {
+      const { createApp } = await import('../packages/api/src/app');
+      app = createApp();
+    } catch (error) {
+      console.error('Failed to create app:', error);
+      throw error;
+    }
+  }
+  return app;
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  try {
+    const appInstance = await getApp();
+    // Strip the leading "/api" segment because Vercel invokes this function for any /api/* route.
+    // However, Express route definitions already include /api prefixes, so we leave the path intact.
+    appInstance(req, res);
+  } catch (error) {
+    console.error('Serverless function error:', error);
+    res.status(500).json({ 
+      error: 'Serverless function failed to initialize',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 }
