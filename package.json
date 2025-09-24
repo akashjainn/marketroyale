@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "packageManager": "pnpm@9.10.0",
+  "engines": {
+    "node": "18.x"
+  },
   "workspaces": ["packages/*"],
   "scripts": {
     "prebuild": "pnpm --filter shared build && pnpm --filter api prisma generate",

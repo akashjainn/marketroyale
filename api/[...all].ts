@@ -33,16 +33,33 @@ async function getApp() {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Simple health check for debugging
   if (req.url === '/api/ping') {
-    return res.json({
-      message: 'Serverless function is alive',
-      timestamp: new Date().toISOString(),
-      env: {
-        NODE_ENV: process.env.NODE_ENV,
-        DATABASE_URL: !!process.env.DATABASE_URL
-      }
-    });
+    try {
+      return res.json({
+        message: 'Serverless function is alive',
+        timestamp: new Date().toISOString(),
+        url: req.url,
+        method: req.method,
+        env: {
+          NODE_ENV: process.env.NODE_ENV,
+          DATABASE_URL: !!process.env.DATABASE_URL
+        }
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: 'Ping failed',
+        message: error instanceof Error ? error.message : 'Unknown ping error'
+      });
+    }
   }
   
+  // For now, just return a simple message instead of loading the full app
+  return res.json({
+    message: 'API endpoint temporarily disabled for debugging',
+    url: req.url,
+    method: req.method
+  });
+
+  /* Commented out for debugging
   try {
     const appInstance = await getApp();
     // Express app handles the request
@@ -55,4 +72,5 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       stack: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.stack : undefined) : undefined
     });
   }
+  */
 }
