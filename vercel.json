@@ -3,12 +3,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/[...all].ts": {
-      "includeFiles": [
-        "dist/**",
-        "packages/api/dist/**",
-        "packages/shared/dist/**",
-        "packages/shared/package.json"
-      ]
+      "includeFiles": "{dist/**,packages/api/dist/**,packages/shared/dist/**,packages/shared/package.json}"
     }
   },
   "rewrites": [
