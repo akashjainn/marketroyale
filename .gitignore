@@ -1,9 +1,15 @@
 node_modules
 .env
 .env.local
-public
 build
 coverage
 .DS_Store
 .vercel
 .next
+
+# Generated static files from web build
+index.html
+*.svg
+index-*.css
+index-*.js
+assets/
