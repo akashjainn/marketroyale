@@ -1,8 +1,7 @@
 {
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "pnpm -w run build:all",
-  "outputDirectory": "./dist",
-  "framework": null,
+  "outputDirectory": "public",
   "functions": {
     "api/[...all].ts": {
       "memory": 512,
