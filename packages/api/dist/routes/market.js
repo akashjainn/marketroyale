@@ -4,16 +4,23 @@ exports.marketRouter = void 0;
 const express_1 = require("express");
 const shared_1 = require("shared");
 const env_1 = require("../env");
-const adapter = (0, shared_1.createFinnhubAdapter)(env_1.env.FINNHUB_API_KEY);
+const adapter = env_1.env.FINNHUB_API_KEY ? (0, shared_1.createFinnhubAdapter)(env_1.env.FINNHUB_API_KEY) : null;
 exports.marketRouter = (0, express_1.Router)();
-exports.marketRouter.get('/snapshot', async (req, res) => {
+// Market API availability middleware
+function requireMarketAPI(req, res, next) {
+    if (!adapter) {
+        return res.status(503).json({ error: 'Market API not available - FINNHUB_API_KEY not configured' });
+    }
+    next();
+}
+exports.marketRouter.get('/snapshot', requireMarketAPI, async (req, res) => {
     const tickers = (req.query.tickers || '').split(',').filter(Boolean).slice(0, 50);
     if (!tickers.length)
         return res.status(400).json({ error: 'tickers required' });
     const snap = await adapter.getSnapshot(tickers);
     res.json({ snapshot: snap });
 });
-exports.marketRouter.get('/ohlc', async (req, res) => {
+exports.marketRouter.get('/ohlc', requireMarketAPI, async (req, res) => {
     const { ticker, start, end, tf } = req.query;
     if (!ticker || !start || !end || !tf)
         return res.status(400).json({ error: 'ticker,start,end,tf required' });

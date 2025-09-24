@@ -15,9 +15,27 @@ function createApp() {
     const app = (0, express_1.default)();
     app.use((0, cors_1.default)());
     app.use(express_1.default.json());
-    app.get('/api/health', (_req, res) => res.json({ ok: true, env: env_1.env.NODE_ENV }));
+    // Health check that shows service status
+    app.get('/api/health', (_req, res) => {
+        const status = {
+            ok: true,
+            env: env_1.env.NODE_ENV,
+            database: !!process.env.DATABASE_URL,
+            marketAPI: !!env_1.env.FINNHUB_API_KEY,
+            timestamp: new Date().toISOString()
+        };
+        res.json(status);
+    });
     app.use('/api/contests', contests_1.contestsRouter);
     app.use('/api/market', market_1.marketRouter);
+    // Global error handler
+    app.use((err, _req, res, _next) => {
+        console.error('API Error:', err);
+        res.status(500).json({
+            error: 'Internal server error',
+            message: process.env.NODE_ENV === 'development' ? err.message : undefined
+        });
+    });
     return app;
 }
 // Allow direct execution (optional) for simple debugging without websockets.

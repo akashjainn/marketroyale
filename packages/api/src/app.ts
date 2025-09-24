@@ -11,9 +11,29 @@ export function createApp(): Express {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/api/health', (_req, res) => res.json({ ok: true, env: env.NODE_ENV }));
+  // Health check that shows service status
+  app.get('/api/health', (_req, res) => {
+    const status = {
+      ok: true,
+      env: env.NODE_ENV,
+      database: !!process.env.DATABASE_URL,
+      marketAPI: !!env.FINNHUB_API_KEY,
+      timestamp: new Date().toISOString()
+    };
+    res.json(status);
+  });
+  
   app.use('/api/contests', contestsRouter);
   app.use('/api/market', marketRouter);
+
+  // Global error handler
+  app.use((err: any, _req: any, res: any, _next: any) => {
+    console.error('API Error:', err);
+    res.status(500).json({ 
+      error: 'Internal server error', 
+      message: process.env.NODE_ENV === 'development' ? err.message : undefined 
+    });
+  });
 
   return app;
 }
