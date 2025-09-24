@@ -1,36 +1,58 @@
 // Vercel serverless catch-all to serve the Express API under /api/* while also hosting the built frontend.
-// We import the Express app factory from the api package source. Websockets (Socket.IO) are not enabled here
-// because standard serverless functions are stateless; for realtime you may deploy a separate long-lived server
-// (e.g., using a separate Vercel Edge/Websocket-compatible deployment or another host like Fly.io/Render).
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 // Initialize app with error handling
 let app: any = null;
+let initError: Error | null = null;
 
 async function getApp() {
+  if (initError) {
+    throw initError;
+  }
+  
   if (!app) {
     try {
-      const { createApp } = await import('../packages/api/src/app');
-      app = createApp();
+      console.log('Initializing serverless function...');
+      console.log('NODE_ENV:', process.env.NODE_ENV);
+      
+      // Try to import the app
+      const appModule = await import('../packages/api/dist/app');
+      console.log('App module imported successfully');
+      
+      app = appModule.createApp();
+      console.log('App created successfully');
     } catch (error) {
       console.error('Failed to create app:', error);
-      throw error;
+      initError = error instanceof Error ? error : new Error('Unknown initialization error');
+      throw initError;
     }
   }
   return app;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // Simple health check for debugging
+  if (req.url === '/api/ping') {
+    return res.json({
+      message: 'Serverless function is alive',
+      timestamp: new Date().toISOString(),
+      env: {
+        NODE_ENV: process.env.NODE_ENV,
+        DATABASE_URL: !!process.env.DATABASE_URL
+      }
+    });
+  }
+  
   try {
     const appInstance = await getApp();
-    // Strip the leading "/api" segment because Vercel invokes this function for any /api/* route.
-    // However, Express route definitions already include /api prefixes, so we leave the path intact.
+    // Express app handles the request
     appInstance(req, res);
   } catch (error) {
     console.error('Serverless function error:', error);
     res.status(500).json({ 
-      error: 'Serverless function failed to initialize',
-      message: error instanceof Error ? error.message : 'Unknown error'
+      error: 'Serverless function failed',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.stack : undefined) : undefined
     });
   }
 }
