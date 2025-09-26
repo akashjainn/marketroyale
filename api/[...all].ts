@@ -16,7 +16,8 @@ async function getApp() {
       console.log('NODE_ENV:', process.env.NODE_ENV);
       
       // Try to import the app
-      const appModule = await import('../packages/api/dist/app');
+      // Explicit .js extension keeps ESM resolution happy in the serverless runtime
+      const appModule = await import('../dist/api/app.js');
       console.log('App module imported successfully');
       
       app = appModule.createApp();

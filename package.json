@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "packageManager": "pnpm@9.10.0",
   "engines": {
-    "node": "18.x"
+    "node": "22.x"
   },
   "workspaces": ["packages/*"],
   "scripts": {
@@ -12,7 +12,7 @@
     "build": "tsc -b tsconfig.build.json",
     "ensure:web": "pnpm --filter web install --frozen-lockfile || pnpm --filter web install",
     "build:web": "pnpm --filter web build",
-    "collect:static": "shx rm -rf dist && shx mkdir -p dist && shx cp -r packages/web/dist/* dist/ && echo 'Contents of dist directory:' && shx ls -A dist/",
+    "collect:static": "shx rm -rf dist && shx mkdir -p dist && shx cp -r packages/web/dist/* dist/ && shx mkdir -p dist/api && shx cp -r packages/api/dist/* dist/api/ && shx mkdir -p dist/node_modules/shared/dist && shx cp -r packages/shared/dist/* dist/node_modules/shared/dist/ && shx cp packages/shared/package.json dist/node_modules/shared/ && echo 'Contents of dist directory:' && shx ls -A dist/",
     "build:api": "pnpm --filter api build",
     "build:all": "pnpm build && pnpm ensure:web && pnpm build:web && pnpm collect:static && echo 'Build completed, checking for dist/index.html:' && shx ls -A dist/index.html",
     "postinstall": "pnpm --filter api prisma generate",
