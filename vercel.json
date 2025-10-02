@@ -6,7 +6,9 @@
       "includeFiles": "{dist/**,packages/api/dist/**,packages/shared/dist/**,packages/shared/package.json}"
     }
   },
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "/api/[...all]" }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/[...all]" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
