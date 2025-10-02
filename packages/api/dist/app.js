@@ -4,8 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createApp = createApp;
+exports.default = handler;
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const contests_1 = require("./routes/contests");
 const market_1 = require("./routes/market");
 const env_1 = require("./env");
@@ -28,6 +31,23 @@ function createApp() {
     });
     app.use('/api/contests', contests_1.contestsRouter);
     app.use('/api/market', market_1.marketRouter);
+    // Only attempt to serve pre-built static frontend in production builds (Vercel) –
+    // during local dev we rely on Vite dev server + proxy.
+    if (process.env.NODE_ENV === 'production') {
+        const staticDir = path_1.default.resolve(process.cwd(), 'dist');
+        const indexFile = path_1.default.join(staticDir, 'index.html');
+        if (fs_1.default.existsSync(staticDir) && fs_1.default.existsSync(indexFile)) {
+            app.use(express_1.default.static(staticDir));
+            app.get('*', (req, res, next) => {
+                if (req.path?.startsWith('/api'))
+                    return next();
+                res.sendFile(indexFile);
+            });
+        }
+        else {
+            console.warn('Static frontend assets not found at', staticDir);
+        }
+    }
     // Global error handler
     app.use((err, _req, res, _next) => {
         console.error('API Error:', err);
@@ -38,10 +58,15 @@ function createApp() {
     });
     return app;
 }
+// Vercel serverless handler - default export must be a function
+const app = createApp();
+function handler(req, res) {
+    return app(req, res);
+}
 // Allow direct execution (optional) for simple debugging without websockets.
 if (require.main === module) {
-    const app = createApp();
+    const appInstance = createApp();
     const port = process.env.PORT || 4000;
-    app.listen(port, () => console.log(`API (no realtime) listening on :${port}`));
+    appInstance.listen(port, () => console.log(`API (no realtime) listening on :${port}`));
 }
 //# sourceMappingURL=app.js.map

@@ -79,6 +79,9 @@ importers:
       '@types/node':
         specifier: ^20.11.30
         version: 20.19.17
+      '@vercel/node':
+        specifier: ^3.0.27
+        version: 3.2.29
       prisma:
         specifier: ^5.15.0
         version: 5.22.0

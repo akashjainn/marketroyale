@@ -1,9 +1,27 @@
 import { z } from 'zod';
 import dotenv from 'dotenv';
+import path from 'path';
+import fs from 'fs';
 
-// Only load .env file if not in production (Vercel provides env vars directly)
+// Enhanced env loading: try local package .env, then repo root .env (two levels up)
 if (process.env.NODE_ENV !== 'production') {
-  dotenv.config();
+  const tried: string[] = [];
+  function tryLoad(p: string) {
+    tried.push(p);
+    if (fs.existsSync(p)) {
+      dotenv.config({ path: p });
+      return true;
+    }
+    return false;
+  }
+  const localEnv = path.resolve(process.cwd(), '.env');
+  const rootEnv = path.resolve(process.cwd(), '../../.env');
+  if (!tryLoad(localEnv)) {
+    tryLoad(rootEnv);
+  }
+  if (!process.env.DATABASE_URL) {
+    console.warn('ENV: DATABASE_URL not set. Tried:', tried.join(', '));
+  }
 }
 
 const schema = z.object({
