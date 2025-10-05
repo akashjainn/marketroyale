@@ -14,6 +14,14 @@ export function createApp(): Express {
   app.use(cors());
   app.use(express.json());
 
+  app.get('/', (_req, res) => {
+    res.json({
+      service: 'marketroyale-api',
+      status: 'ok',
+      health: '/api/health'
+    });
+  });
+
   // Health check that shows service status
   app.get('/api/health', (_req, res) => {
     const status = {
